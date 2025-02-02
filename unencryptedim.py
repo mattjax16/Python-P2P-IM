@@ -22,23 +22,23 @@ def get_args():
 
 def server():
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_sock.bind(('localhost',9999))
+    server_sock.bind(('0.0.0.0',9999))
     server_sock.listen(1)
     while True:
         client_sock, client_addr = server_sock.accept()
         print("Connection From", client_addr)
 
-        # try:
-        #     while True:
-        #         msg = client_sock.recv(2048)
-        #         print(msg)
-        #
-        # except KeyboardInterrupt:
-        #     pass
-        # finally:
-        #     client_sock.close()
-        #     server_sock.close()
-        #     sys.exit(0)
+        try:
+            while True:
+                msg = client_sock.recv(2048).decode('utf-8')
+                print(msg)
+
+        except KeyboardInterrupt:
+            pass
+        finally:
+            client_sock.close()
+            server_sock.close()
+            sys.exit(0)
 
 
 def client(hostname):
