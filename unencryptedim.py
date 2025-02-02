@@ -42,6 +42,7 @@ def p2p_message_handler(client_sock):
 
 def server():
     signal.signal(signal.SIGINT, shutdown)
+    signal.signal(signal.SIGTERM, shutdown)
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_sock.bind(("0.0.0.0", 9999))
     server_sock.listen(1)
@@ -52,6 +53,7 @@ def server():
 
 def client(hostname):
     signal.signal(signal.SIGINT, shutdown)
+    signal.signal(signal.SIGTERM, shutdown)
     client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_sock.connect((hostname, 9999))
 
@@ -59,17 +61,21 @@ def client(hostname):
 
 
 def shutdown(signum, frame):
+    sys.stdout.flush()
     sys.exit(0)
     return
 
 
 def main():
     args = get_args()
+    sys.stdout.flush()
 
     if args.c:
         client(args.c)
     elif args.s:
         server()
+
+    sys.stdout.flush()
 
 
 
