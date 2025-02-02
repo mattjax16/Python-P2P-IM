@@ -84,6 +84,7 @@ def shutdown(signum, frame):
     if server_socket:
         server_socket.close()
 
+    sys.stdout.flush()
     sys.exit(0)
     return
 
@@ -97,7 +98,11 @@ def main():
     elif args.s:
         server()
 
-    sys.stdout.flush()
+    shutdown(0,0)
+
+
+
+
 
 
 if __name__ == "__main__":
