@@ -26,16 +26,19 @@ def server():
     server_sock.listen(1)
     while True:
         client_sock, client_addr = server_sock.accept()
+        print("Connection From", client_addr)
 
-        try:
-            while True:
-                msg = client_sock.recv(2048)
-                print(msg)
-
-        except KeyboardInterrupt:
-            client_sock.close()
-            server_sock.close()
-            sys.exit(0)
+        # try:
+        #     while True:
+        #         msg = client_sock.recv(2048)
+        #         print(msg)
+        #
+        # except KeyboardInterrupt:
+        #     pass
+        # finally:
+        #     client_sock.close()
+        #     server_sock.close()
+        #     sys.exit(0)
 
 
 def client(hostname):
@@ -65,6 +68,8 @@ def main():
         client(args.c)
     elif args.s:
         server()
+
+    print("done")
 
 
 
