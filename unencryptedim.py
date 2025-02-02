@@ -29,12 +29,16 @@ def server():
     server_sock.bind(("0.0.0.0", 9999))
     server_sock.listen(1)
 
+    client_sock, addr = server_sock.accept()
+
+
+
     while True:
-        inputs, _ , _ = select.select([stdin, server_sock], [], [])
+        inputs, _ , _ = select.select([stdin, client_sock], [], [])
         for input in inputs:
-            if input == server_sock:
+            if input == client_sock:
                 try:
-                    msg = server_sock.recv(2048).decode("utf-8")
+                    msg = client_sock.recv(2048).decode("utf-8")
                     if msg:
                         print(msg)
                 except:
@@ -52,14 +56,21 @@ def client(hostname):
     client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_sock.connect((hostname, 9999))
 
-    try:
-        while True:
-            msg = input()
-            client_sock.sendall(msg.encode("utf-8"))
-
-    except:
-        pass
-
+    inputs, _, _ = select.select([stdin, client_sock], [], [])
+    for input in inputs:
+        if input == client_sock:
+            try:
+                msg = client_sock.recv(2048).decode("utf-8")
+                if msg:
+                    print(msg, end="")
+            except:
+                pass
+        else:
+            try:
+                msg = stdin.readline()
+                client_sock.sendall(msg.encode("utf-8"))
+            except:
+                pass
 
 
 def shutdown(signum, frame):
@@ -75,7 +86,6 @@ def main():
     elif args.s:
         server()
 
-    print("done")
 
 
 if __name__ == "__main__":
