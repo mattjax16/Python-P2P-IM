@@ -21,20 +21,9 @@ def get_args():
     return args
 
 
-
-
-def server():
-    signal.signal(signal.SIGINT, shutdown)
-    server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_sock.bind(("0.0.0.0", 9999))
-    server_sock.listen(1)
-
-    client_sock, addr = server_sock.accept()
-
-
-
+def p2p_message_handler(client_sock):
     while True:
-        inputs, _ , _ = select.select([stdin, client_sock], [], [])
+        inputs, _, _ = select.select([stdin, client_sock], [], [])
         for input in inputs:
             if input == client_sock:
                 try:
@@ -46,9 +35,19 @@ def server():
             else:
                 try:
                     msg = stdin.readline()
-                    server_sock.sendall(msg.encode("utf-8"))
+                    client_sock.sendall(msg.encode("utf-8"))
                 except:
                     pass
+
+
+def server():
+    signal.signal(signal.SIGINT, shutdown)
+    server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_sock.bind(("0.0.0.0", 9999))
+    server_sock.listen(1)
+
+    client_sock, addr = server_sock.accept()
+    p2p_message_handler(client_sock)
 
 
 def client(hostname):
@@ -56,22 +55,7 @@ def client(hostname):
     client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_sock.connect((hostname, 9999))
 
-    while True:
-        inputs, _, _ = select.select([stdin, client_sock], [], [])
-        for input in inputs:
-            if input == client_sock:
-                try:
-                    msg = client_sock.recv(2048).decode("utf-8")
-                    if msg:
-                        print(msg, end="")
-                except:
-                    pass
-            else:
-                try:
-                    msg = stdin.readline()
-                    client_sock.sendall(msg.encode("utf-8"))
-                except:
-                    pass
+    p2p_message_handler(client_sock)
 
 
 def shutdown(signum, frame):
