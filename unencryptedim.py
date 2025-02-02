@@ -34,7 +34,7 @@ def p2p_message_handler(client_sock):
                     pass
             else:
                 try:
-                    msg = stdin.readline()
+                    msg = stdin.readline().strip()
                     client_sock.sendall(msg.encode("utf-8"))
                 except:
                     pass
