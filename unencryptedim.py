@@ -35,7 +35,8 @@ def server():
             if input == server_sock:
                 try:
                     msg = server_sock.recv(2048).decode("utf-8")
-                    print(msg)
+                    if msg:
+                        print(msg)
                 except:
                     pass
             else:
@@ -50,13 +51,14 @@ def client(hostname):
     signal.signal(signal.SIGINT, shutdown)
     client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_sock.connect((hostname, 9999))
-    while True:
-        try:
+
+    try:
+        while True:
             msg = input()
             client_sock.sendall(msg.encode("utf-8"))
 
-        except:
-            pass
+    except:
+        pass
 
 
 
