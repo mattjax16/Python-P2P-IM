@@ -12,6 +12,14 @@ import signal
 from sys import stdin
 
 
+""" GLOBALS """
+client_socket = None
+server_socket = None
+
+
+""" FUNCTIONS"""
+
+
 def get_args():
     parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group(required=True)
@@ -44,25 +52,35 @@ def p2p_message_handler(client_sock):
 
 
 def server():
+    global server_socket
     signal.signal(signal.SIGINT, shutdown)
     signal.signal(signal.SIGTERM, shutdown)
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_sock.bind(("0.0.0.0", 9999))
+    server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_sock.listen(1)
     client_sock, addr = server_sock.accept()
     p2p_message_handler(client_sock)
 
 
 def client(hostname):
+    global client_socket
     signal.signal(signal.SIGINT, shutdown)
     signal.signal(signal.SIGTERM, shutdown)
     client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_sock.connect((hostname, 9999))
+    client_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     p2p_message_handler(client_sock)
 
 
 def shutdown(signum, frame):
     sys.stdout.flush()
+
+    if client_socket:
+        client_socket.close()
+    if server_socket:
+        server_socket.close()
+
     sys.exit(0)
     return
 
