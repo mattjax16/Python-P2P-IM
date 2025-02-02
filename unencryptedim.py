@@ -62,7 +62,7 @@ def main():
     args = get_args()
 
     if args.c:
-        client(args.hostname)
+        client(args.c)
     elif args.s:
         server()
 
