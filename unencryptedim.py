@@ -59,7 +59,7 @@ def server():
     signal.signal(signal.SIGINT, shutdown)
     signal.signal(signal.SIGTERM, shutdown)
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_sock.bind(("localhost", 9999))
+    server_sock.bind(("0.0.0.0", 9999))
     server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_sock.listen(1)
     client_sock, addr = server_sock.accept()
