@@ -85,7 +85,7 @@ def shutdown(signum, frame):
         server_socket.close()
 
     sys.stdout.flush()
-    sys.exit(0)
+    # sys.exit(0)
     return
 
 
