@@ -65,7 +65,6 @@ def server():
         server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_sock.listen(1)
         client_sock, addr = server_sock.accept()
-        client_socket = client_sock
         p2p_message_handler(client_sock)
     finally:
         pass
@@ -80,7 +79,6 @@ def client(hostname):
     signal.signal(signal.SIGINT, shutdown)
     signal.signal(signal.SIGTERM, shutdown)
     client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket = client_sock
     try:
         client_sock.connect((hostname, 9999))
         client_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
