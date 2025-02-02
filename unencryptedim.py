@@ -21,11 +21,37 @@ def get_args():
 
 
 def server():
-    return
+    server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_sock.bind(('localhost',9999))
+    server_sock.listen(1)
+    while True:
+        client_sock, client_addr = server_sock.accept()
+
+        try:
+            while True:
+                msg = client_sock.recv(2048)
+                print(msg)
+
+        except KeyboardInterrupt:
+            client_sock.close()
+            server_sock.close()
+            sys.exit(0)
 
 
-def client():
-    return
+def client(hostname):
+    client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_sock.connect((hostname, 9999))
+
+    try:
+        while True:
+            msg = input()
+            client_sock.sendall(msg.encode('utf-8'))
+
+    except KeyboardInterrupt:
+        pass
+    finally:
+        client_sock.close()
+        sys.exit(0)
 
 
 def shutdown():
@@ -36,7 +62,7 @@ def main():
     args = get_args()
 
     if args.c:
-        client()
+        client(args.hostname)
     elif args.s:
         server()
 
