@@ -27,17 +27,22 @@ def p2p_message_handler(client_sock):
         for input in inputs:
             if input == client_sock:
                 try:
-                    msg = client_sock.recv(2048).decode("utf-8")
-                    if msg:
-                        print(msg)
+                    msg = client_sock.recv(20480).decode("utf-8")
+                    if not msg:
+                        return
+
+                    print(msg)
                 except:
-                    pass
+                    return
             else:
                 try:
-                    msg = stdin.readline().strip()
+                    msg = stdin.readline()
+                    if not msg:
+                        return
+                    msg = msg.strip()
                     client_sock.sendall(msg.encode("utf-8"))
                 except:
-                    pass
+                    return
 
 
 def server():
@@ -76,7 +81,6 @@ def main():
         server()
 
     sys.stdout.flush()
-
 
 
 if __name__ == "__main__":
