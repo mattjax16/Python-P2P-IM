@@ -68,10 +68,11 @@ def server():
         client_socket = client_sock
         p2p_message_handler(client_sock)
     finally:
-        if client_socket:
-            client_socket.close()
-        if server_socket:
-            server_socket.close()
+        pass
+        # if client_socket:
+        #     client_socket.close()
+        # if server_socket:
+        #     server_socket.close()
 
 
 def client(hostname):
@@ -85,8 +86,9 @@ def client(hostname):
         client_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         p2p_message_handler(client_sock)
     finally:
-        if client_socket:
-            client_socket.close()
+        pass
+        # if client_socket:
+        #     client_socket.close()
 
 
 def shutdown(signum, frame):
