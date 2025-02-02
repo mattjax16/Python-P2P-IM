@@ -30,25 +30,28 @@ def get_args():
 
 
 def p2p_message_handler(client_sock):
-    while True:
-        inputs, _, _ = select.select([stdin, client_sock], [], [])
-        for input in inputs:
-            if input == client_sock:
-                try:
-                    msg = client_sock.recv(20480).decode("utf-8")
-                    if not msg:
+    try:
+        while True:
+            inputs, _, _ = select.select([stdin, client_sock], [], [])
+            for input in inputs:
+                if input == client_sock:
+                    try:
+                        msg = client_sock.recv(20480).decode("utf-8")
+                        if not msg:
+                            return
+                        print(msg, end="")
+                    except BaseException:
                         return
-                    print(msg, end="")
-                except BaseException:
-                    return
-            else:
-                try:
-                    msg = stdin.readline()
-                    if not msg:
+                else:
+                    try:
+                        msg = stdin.readline()
+                        if not msg:
+                            return
+                        client_sock.sendall(msg.encode("utf-8"))
+                    except BaseException:
                         return
-                    client_sock.sendall(msg.encode("utf-8"))
-                except BaseException:
-                    return
+    finally:
+        client_sock.close()
 
 
 def server():
