@@ -56,21 +56,22 @@ def client(hostname):
     client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_sock.connect((hostname, 9999))
 
-    inputs, _, _ = select.select([stdin, client_sock], [], [])
-    for input in inputs:
-        if input == client_sock:
-            try:
-                msg = client_sock.recv(2048).decode("utf-8")
-                if msg:
-                    print(msg, end="")
-            except:
-                pass
-        else:
-            try:
-                msg = stdin.readline()
-                client_sock.sendall(msg.encode("utf-8"))
-            except:
-                pass
+    while True:
+        inputs, _, _ = select.select([stdin, client_sock], [], [])
+        for input in inputs:
+            if input == client_sock:
+                try:
+                    msg = client_sock.recv(2048).decode("utf-8")
+                    if msg:
+                        print(msg, end="")
+                except:
+                    pass
+            else:
+                try:
+                    msg = stdin.readline()
+                    client_sock.sendall(msg.encode("utf-8"))
+                except:
+                    pass
 
 
 def shutdown(signum, frame):
