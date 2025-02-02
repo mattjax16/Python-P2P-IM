@@ -30,7 +30,6 @@ def p2p_message_handler(client_sock):
                     msg = client_sock.recv(20480).decode("utf-8")
                     if not msg:
                         return
-
                     print(msg)
                 except:
                     return
@@ -39,7 +38,8 @@ def p2p_message_handler(client_sock):
                     msg = stdin.readline()
                     if not msg:
                         return
-                    msg = msg.strip()
+
+
                     client_sock.sendall(msg.encode("utf-8"))
                 except:
                     return
