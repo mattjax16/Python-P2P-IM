@@ -92,8 +92,10 @@ def shutdown(signum, frame):
     sys.stdout.flush()
 
     if client_socket:
+        client_socket.shutdown(socket.SHUT_RDWR)
         client_socket.close()
     if server_socket:
+        server_socket.shutdown(socket.SHUT_RDWR)
         server_socket.close()
 
     sys.exit(0)
